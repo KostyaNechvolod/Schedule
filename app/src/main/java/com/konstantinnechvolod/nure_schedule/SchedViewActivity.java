@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -48,6 +50,9 @@ public class SchedViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sched_view);
+
+        JodaTimeAndroid.init(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -72,9 +77,6 @@ public class SchedViewActivity extends AppCompatActivity {
                 endDate = mSettings.getString(END_DATE,"");
             }
         }
-
-       //Toast.makeText(getApplicationContext(),"D: " + date_interval + " " + "A: " + Aid_aud, Toast.LENGTH_LONG).show();
-        //showSched();
     }
 
     @Override
@@ -91,7 +93,6 @@ public class SchedViewActivity extends AppCompatActivity {
         }
         setDefault();
         showSched();
-        //Toast.makeText(getApplicationContext(),Aid_aud, Toast.LENGTH_LONG).show();
         super.onResume();
     }
 
@@ -146,11 +147,9 @@ public class SchedViewActivity extends AppCompatActivity {
         getDate(date_interval);
         createRequest(Aid_aud,ADateStart,ADateEnd);
         webView.loadUrl(REQUEST_URL);
-
     }
 
     private void getAuditoryID(String aud){
-        // получение id аудитории с CISTAPI
         Aid_aud = "&Aid_aud=5573655";
     }
 
@@ -161,7 +160,6 @@ public class SchedViewActivity extends AppCompatActivity {
             case "week":
                 // get current week
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                //sb.append(ADateStart).append(simpleDateFormat.format(currentTime));
                 Calendar calendar = Calendar.getInstance();
                 calendar.setFirstDayOfWeek(Calendar.MONDAY);
                 while (calendar.get(Calendar.DAY_OF_WEEK) > calendar.getFirstDayOfWeek()) {
@@ -169,9 +167,8 @@ public class SchedViewActivity extends AppCompatActivity {
                 }
                 ADateStart = sb.append(ADateStart).append(simpleDateFormat.format(calendar.getTime())).toString();
                 sb.setLength(0);
-                calendar.roll(Calendar.DATE, 6);
+                calendar.roll(Calendar.DAY_OF_WEEK, 6);
                 ADateEnd = sb.append(ADateEnd).append(simpleDateFormat.format(calendar.getTime())).toString();
-                Log.d("date1", ADateEnd);
                 break;
             case "month":
                 // get current month
@@ -180,7 +177,6 @@ public class SchedViewActivity extends AppCompatActivity {
                 ADateStart = sb.append(ADateStart).append("01.").append(currentMonth + ".").append(currentYear).toString();
                 sb.setLength(0);
                 ADateEnd = sb.append(ADateEnd).append(Calendar.getInstance().getActualMaximum(Calendar.DATE) + ".").append(currentMonth + ".").append(currentYear).toString();
-                //Log.d("getMonth", ADateStart + " " + ADateEnd);
                 break;
             case "custom_date":
                 ADateStart = sb.append(ADateStart).append(startDate).toString();
