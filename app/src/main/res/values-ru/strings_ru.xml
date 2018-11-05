@@ -8,7 +8,7 @@
     <string name="week">Текущая неделя</string>
     <string name="month">Текущий месяц</string>
     <string name="custom">Поиск по произвольным датам</string>
-    <string name="find_button">OK</string>
+    <string name="find_button">Найти</string>
     <string name="start_date">Начальная дата</string>
     <string name="end_date">Конечная дата</string>
 </resources>
