@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -44,6 +46,7 @@ public class SchedViewActivity extends AppCompatActivity {
 
     private WebView webView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,7 @@ public class SchedViewActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         webView = (WebView) findViewById (R.id.web_view);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -66,13 +70,14 @@ public class SchedViewActivity extends AppCompatActivity {
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         if(mSettings.contains(APP_PREFERENCES_AUDITORY_ID)){
-            Aid_aud = mSettings.getString(APP_PREFERENCES_AUDITORY_ID, "");
+            aud = mSettings.getString(APP_PREFERENCES_AUDITORY_ID, "");
             date_interval = mSettings.getString(APP_PREFERENCES_DATE_INTERVAL, "");
             if(date_interval.equals("custom_date")){
                 startDate = mSettings.getString(START_DATE,"");
                 endDate = mSettings.getString(END_DATE,"");
             }
         }
+
     }
 
     @Override
@@ -80,7 +85,7 @@ public class SchedViewActivity extends AppCompatActivity {
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         if(mSettings.contains(APP_PREFERENCES_AUDITORY_ID)){
-            Aid_aud = mSettings.getString(APP_PREFERENCES_AUDITORY_ID, "");
+            aud = mSettings.getString(APP_PREFERENCES_AUDITORY_ID, "");
             date_interval = mSettings.getString(APP_PREFERENCES_DATE_INTERVAL, "");
             if(date_interval.equals("custom_date")){
                 startDate = mSettings.getString(START_DATE,"");
@@ -146,7 +151,8 @@ public class SchedViewActivity extends AppCompatActivity {
     }
 
     private void getAuditoryID(String aud){
-        Aid_aud = "&Aid_aud=5573655";
+
+        Aid_aud = "&Aid_aud=" + aud;
     }
 
     private void getDate(String date_interval){

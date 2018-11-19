@@ -14,10 +14,16 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.konstantinnechvolod.nure_schedule.find_auditory.AUDITORYResp;
+import com.konstantinnechvolod.nure_schedule.find_auditory.Auditory;
 import com.konstantinnechvolod.nure_schedule.find_auditory.CISTAPI;
 import com.konstantinnechvolod.nure_schedule.find_auditory.Controller;
+import com.konstantinnechvolod.nure_schedule.find_auditory.University;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -48,6 +54,8 @@ public class FindAudActivity extends AppCompatActivity {
     TextView end;
 
     Calendar dateAndTime=Calendar.getInstance();
+
+    AUDITORYResp auditoryResp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,13 +142,9 @@ public class FindAudActivity extends AppCompatActivity {
 
     public void find(View v){
         String audNuber = editAudNumber.getText().toString();
-        String audID = "";
+        String audID = audId(audNuber);
+        Log.d("TestId", audID);
 
-        for(String auditoriesId : audIdList){
-            if(auditoriesId.equals(audNuber)){
-                audID = auditoriesId;
-            }
-        }
 
         SharedPreferences.Editor editor = mSettings.edit();
         if(startDate != "" && endDate != ""){
@@ -159,10 +163,50 @@ public class FindAudActivity extends AppCompatActivity {
         finish();*/
     }
 
-    public List<String> audIdList = new ArrayList<>();
+    public ArrayList<Auditory> audList = new ArrayList<>();
 
     String audId = "";
+
     private void aud(){
+        //Reading source from local file
+        InputStream inputStream = this.getResources().openRawResource(R.raw.auditory_id);
+        String jsonString = readJsonFile(inputStream);
+
+        Gson gson = new Gson();
+        auditoryResp = gson.fromJson(jsonString, AUDITORYResp.class);
+    }
+
+    private String audId(String shortName){
+        String audId = "";
+        for(int i=0; i< auditoryResp.getUniversity().getBuildings().size(); i++){
+            for(int j=0; j<auditoryResp.getUniversity().getBuildings().get(i).getAuditories().size(); j++){
+                if(shortName.equals(auditoryResp.getUniversity().getBuildings().get(i).getAuditories().get(j).getShortName())){
+                    audId = auditoryResp.getUniversity().getBuildings().get(i).getAuditories().get(j).getId();
+                }
+            }
+        }
+        return audId;
+    }
+
+    private String readJsonFile(InputStream inputStream) {
+// TODO Auto-generated method stub
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        byte bufferByte[] = new byte[1024];
+        int length;
+        try {
+            while ((length = inputStream.read(bufferByte)) != -1) {
+                outputStream.write(bufferByte, 0, length);
+            }
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+
+        }
+        return outputStream.toString();
+    }
+
+    private void audRetrofit(){
 
         CISTAPI cistapi = Controller.getApi();
         cistapi.getUniversity().enqueue(new Callback<AUDITORYResp>() {
@@ -173,7 +217,7 @@ public class FindAudActivity extends AppCompatActivity {
 
                         //Log.d("test", auditories.getShortName())// ;
                         audId = response.body().getUniversity().getBuildings().get(i).getAuditories().get(j).getShortName();
-                        audIdList.add(audId);
+                        //audIdList.add(audId);
                         Log.d("test1", audId);
                     }
 

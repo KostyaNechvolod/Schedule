@@ -20,7 +20,7 @@ public class Auditory {
     @Expose
     private String isHavePower;
     @SerializedName("auditory_types")
-    @Expose
+    @Expose(deserialize = false, serialize = false)
     private List<AuditoryType> auditoryTypes = null;
 
     public String getId() {

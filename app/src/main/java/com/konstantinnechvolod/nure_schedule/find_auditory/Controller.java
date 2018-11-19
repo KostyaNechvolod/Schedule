@@ -12,6 +12,7 @@ public class Controller {
     public static CISTAPI getApi(){
         Gson gson = new GsonBuilder()
                 .setLenient()
+                .excludeFieldsWithoutExposeAnnotation()
                 .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
