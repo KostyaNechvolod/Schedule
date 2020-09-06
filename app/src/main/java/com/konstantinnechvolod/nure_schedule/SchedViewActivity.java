@@ -4,23 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 
 public class SchedViewActivity extends AppCompatActivity {
 
@@ -33,7 +29,7 @@ public class SchedViewActivity extends AppCompatActivity {
     private String endDate= "";
     private SharedPreferences mSettings;
 
-    private String REQUEST_URL = "http://cist.nure.ua/ias/app/tt/WEB_IAS_TT_GNR_RASP.GEN_AUD_RASP?ATypeDoc=1";
+    private String REQUEST_URL = "https://cist.nure.ua/ias/app/tt/WEB_IAS_TT_GNR_RASP.GEN_AUD_RASP?ATypeDoc=1";
     //http://cist.nure.ua/ias/app/tt/WEB_IAS_TT_GNR_RASP.GEN_AUD_RASP?ATypeDoc=1&Aid_aud=5573655&ADateStart=01.09.2018&AdateEnd=30.09.2018
 
     private String date_interval = "week"; //возвращенное из FindAudActivity (week/month/custom_date)
@@ -102,7 +98,7 @@ public class SchedViewActivity extends AppCompatActivity {
         Aid_aud = "&Aid_aud=";
         ADateStart = "&ADateStart=";
         ADateEnd = "&ADateEnd=";
-        REQUEST_URL = "http://cist.nure.ua/ias/app/tt/WEB_IAS_TT_GNR_RASP.GEN_AUD_RASP?ATypeDoc=1";
+        REQUEST_URL = "https://cist.nure.ua/ias/app/tt/WEB_IAS_TT_GNR_RASP.GEN_AUD_RASP?ATypeDoc=1";
     }
 
     @Override

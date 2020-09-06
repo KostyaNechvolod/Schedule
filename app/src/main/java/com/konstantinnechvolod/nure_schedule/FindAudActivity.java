@@ -2,9 +2,7 @@ package com.konstantinnechvolod.nure_schedule;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,21 +10,20 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.konstantinnechvolod.nure_schedule.find_auditory.AUDITORYResp;
 import com.konstantinnechvolod.nure_schedule.find_auditory.Auditory;
 import com.konstantinnechvolod.nure_schedule.find_auditory.CISTAPI;
 import com.konstantinnechvolod.nure_schedule.find_auditory.Controller;
-import com.konstantinnechvolod.nure_schedule.find_auditory.University;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
