@@ -36,9 +36,9 @@ class FindAudActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_find_aud)
+        setContentView(R.layout.activity_find_aud_new)
         aud()
-        editAudNumber = findViewById(R.id.editText)
+        editAudNumber = findViewById(R.id.edittext_auditory)
         start = findViewById(R.id.start)
         end = findViewById(R.id.end)
         start.visibility = View.INVISIBLE
