@@ -7,5 +7,5 @@ interface CISTAPI {
     /*@GET("P_API_EVENTS_AUDITORY_JSON")
     Call<AUDITORYEVENTResp> getAuditoryEvent(@Query("p_id_auditory") int i);*/
     @get:GET("P_API_AUDITORIES_JSON?")
-    val university: Call<AUDITORYResp?>
+    val university: Call<AuditoryResp?>
 }

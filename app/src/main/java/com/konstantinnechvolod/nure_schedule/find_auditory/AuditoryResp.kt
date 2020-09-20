@@ -3,7 +3,7 @@ package com.konstantinnechvolod.nure_schedule.find_auditory
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class AUDITORYResp {
+class AuditoryResp {
     /*public void setUniversity(University university) {
         this.university = university;
     }*/

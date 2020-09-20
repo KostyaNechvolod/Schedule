@@ -5,15 +5,15 @@ import android.app.DatePickerDialog.OnDateSetListener
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.RadioGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.konstantinnechvolod.nure_schedule.find_auditory.AUDITORYResp
 import com.konstantinnechvolod.nure_schedule.find_auditory.Auditory
+import com.konstantinnechvolod.nure_schedule.find_auditory.AuditoryResp
 import com.konstantinnechvolod.nure_schedule.find_auditory.Controller
+import kotlinx.android.synthetic.main.activity_find_aud_new.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,61 +26,79 @@ class FindAudActivity : AppCompatActivity() {
     private var startDate = ""
     private var endDate = ""
     var mSettings: SharedPreferences? = null
-    private var date: String? = null
-    var radioGroup: RadioGroup? = null
-    var editAudNumber: EditText? = null
-    private lateinit var start: TextView
-    private lateinit var end: TextView
+    private var date: String = "week"
     private var dateAndTime = Calendar.getInstance()
-    var auditoryResp: AUDITORYResp? = null
+    var auditoryResp: AuditoryResp? = null
+
+    private val isDatePickerVisible = MutableLiveData(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_aud_new)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         aud()
-        editAudNumber = findViewById(R.id.edittext_auditory)
-        start = findViewById(R.id.start)
-        end = findViewById(R.id.end)
-        start.visibility = View.INVISIBLE
-        end.visibility = View.INVISIBLE
+
+        isDatePickerVisible.observe(this, {
+            if (it) {
+                start_date_layout.visibility = View.VISIBLE
+                end_date_layout.visibility = View.VISIBLE
+            } else {
+                start_date_layout.visibility = View.INVISIBLE
+                end_date_layout.visibility = View.INVISIBLE
+            }
+        })
         mSettings = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
-        radioGroup = findViewById<View>(R.id.radioGroup) as RadioGroup
-        radioGroup!!.setOnCheckedChangeListener { group, checkedId ->
+
+        edittext_start.setOnClickListener {
+            start()
+        }
+
+        edittext_end.setOnClickListener {
+            end()
+        }
+        chip_group.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.radio_week -> {
+                R.id.week_chip -> {
+                    isDatePickerVisible.value = false
                     date = "week"
-                    start.visibility = View.INVISIBLE
-                    end.visibility = View.INVISIBLE
                 }
-                R.id.radio_month -> {
+                R.id.month_chip -> {
+                    isDatePickerVisible.value = false
                     date = "month"
-                    start.visibility = View.INVISIBLE
-                    end.visibility = View.INVISIBLE
                 }
-                R.id.radio_user_date -> {
+                R.id.custom_date_chip -> {
+                    isDatePickerVisible.value = true
                     date = "custom_date"
-                    start.visibility = View.VISIBLE
-                    end.visibility = View.VISIBLE
-                }
-                else -> {
                 }
             }
+        }
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> true
         }
     }
 
     var tmp: String? = null
-    var startListener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-        tmp = Integer.toString(dayOfMonth) + "." + Integer.toString(monthOfYear + 1) + "." + Integer.toString(year)
-        start!!.text = tmp
+
+    private var startListener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+        tmp = dayOfMonth.toString() + "." + (monthOfYear + 1).toString() + "." + year.toString()
+        edittext_start.setText(tmp)
         startDate = tmp!!
     }
-    var endListener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-        tmp = Integer.toString(dayOfMonth) + "." + Integer.toString(monthOfYear + 1) + "." + Integer.toString(year)
-        end!!.text = tmp
+    private var endListener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+        tmp = dayOfMonth.toString() + "." + (monthOfYear + 1).toString() + "." + year.toString()
+        edittext_end.setText(tmp)
         endDate = tmp!!
     }
 
-    fun start(v: View?) {
+    fun start() {
         DatePickerDialog(this@FindAudActivity, startListener,
                 dateAndTime[Calendar.YEAR],
                 dateAndTime[Calendar.MONTH],
@@ -88,7 +106,7 @@ class FindAudActivity : AppCompatActivity() {
                 .show()
     }
 
-    fun end(v: View?) {
+    fun end() {
         DatePickerDialog(this@FindAudActivity, endListener,
                 dateAndTime[Calendar.YEAR],
                 dateAndTime[Calendar.MONTH],
@@ -97,24 +115,23 @@ class FindAudActivity : AppCompatActivity() {
     }
 
     fun find(v: View?) {
-        val audNuber = editAudNumber!!.text.toString()
-        val audID = audId(audNuber)
+        if (edittext_auditory.text.isNullOrEmpty()) {
+            auditory_input_layout.error = getString(R.string.error_no_auditory_entered)
+            return
+        }
+
+        val audNumber = edittext_auditory!!.text.toString()
+        val audID = getAudIdByName(audNumber)
         Log.d("TestId", audID)
         val editor = mSettings!!.edit()
-        if (startDate !== "" && endDate !== "") {
+        if (startDate != "" && endDate != "") {
             editor.putString(START_DATE, startDate)
             editor.putString(END_DATE, endDate)
         }
         editor.putString(APP_PREFERENCES_AUDITORY_ID, audID)
         editor.putString(APP_PREFERENCES_DATE_INTERVAL, date)
         editor.apply()
-        //Toast.makeText(getApplicationContext(),audID,Toast.LENGTH_SHORT).show();
         finish()
-        /*Intent intent = new Intent();
-        intent.putExtra(DATE_RESULT, date);
-        intent.putExtra(AUDITORY_RESULT, audNuber);
-        setResult(RESULT_OK, intent);
-        finish();*/
     }
 
     var audList = ArrayList<Auditory>()
@@ -124,10 +141,10 @@ class FindAudActivity : AppCompatActivity() {
         val inputStream = this.resources.openRawResource(R.raw.auditory_id)
         val jsonString = readJsonFile(inputStream)
         val gson = Gson()
-        auditoryResp = gson.fromJson(jsonString, AUDITORYResp::class.java)
+        auditoryResp = gson.fromJson(jsonString, AuditoryResp::class.java)
     }
 
-    private fun audId(shortName: String): String? {
+    private fun getAudIdByName(shortName: String): String? {
         var audId: String? = ""
         for (i in auditoryResp?.university?.buildings?.indices!!) {
             for (j in auditoryResp?.university?.buildings!![i]?.auditories?.indices!!) {
@@ -140,7 +157,6 @@ class FindAudActivity : AppCompatActivity() {
     }
 
     private fun readJsonFile(inputStream: InputStream): String {
-// TODO Auto-generated method stub
         val outputStream = ByteArrayOutputStream()
         val bufferByte = ByteArray(1024)
         var length: Int
@@ -157,8 +173,8 @@ class FindAudActivity : AppCompatActivity() {
 
     private fun audRetrofit() {
         val cistapi = Controller.api
-        cistapi.university.enqueue(object : Callback<AUDITORYResp?> {
-            override fun onResponse(call: Call<AUDITORYResp?>, response: Response<AUDITORYResp?>) {
+        cistapi.university.enqueue(object : Callback<AuditoryResp?> {
+            override fun onResponse(call: Call<AuditoryResp?>, response: Response<AuditoryResp?>) {
                 for (i in response.body()?.university?.buildings?.indices!!) {
                     for (j in response.body()?.university?.buildings!![i]?.auditories?.indices!!) {
 
@@ -170,7 +186,7 @@ class FindAudActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<AUDITORYResp?>, t: Throwable) {
+            override fun onFailure(call: Call<AuditoryResp?>, t: Throwable) {
                 t.printStackTrace()
             }
         })

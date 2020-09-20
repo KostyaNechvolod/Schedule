@@ -2,6 +2,8 @@
     <string name="app_name">NURE_Schedule</string>
     <string name="action_settings">Settings</string>
 
+    <string name="error_no_auditory_entered">Please enter auditory number</string>
+
     <string name="choose_schedule">Please, choose auditory and date</string>
     <string name="enter_auditory_hint">Enter auditory number here:</string>
     <string name="week">Current week</string>

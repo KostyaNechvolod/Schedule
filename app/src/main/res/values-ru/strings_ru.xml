@@ -3,6 +3,9 @@
     <string name="app_name">Расписание ХНУРЭ</string>
     <string name="action_settings">Настройки</string>
 
+    <string name="error_no_auditory_entered">Пожалуйста, укажите номер аудитории</string>
+
+
     <string name="choose_schedule">Пожалуйста, выберите аудиторию и дату</string>
     <string name="enter_auditory_hint">Введите номер аудитории:</string>
     <string name="week">Текущая неделя</string>

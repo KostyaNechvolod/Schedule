@@ -28,6 +28,7 @@ class SchedViewActivity : AppCompatActivity() {
     private var ADateStart = "&ADateStart="
     private var ADateEnd = "&ADateEnd="
     private var webView: WebView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sched_view)
