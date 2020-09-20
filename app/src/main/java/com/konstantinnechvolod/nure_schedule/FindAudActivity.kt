@@ -35,6 +35,7 @@ class FindAudActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_aud_new)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.action_settings)
         aud()
 
         isDatePickerVisible.observe(this, {
