@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -122,7 +121,6 @@ class FindAudActivity : AppCompatActivity() {
 
         val audNumber = edittext_auditory!!.text.toString()
         val audID = getAudIdByName(audNumber)
-        Log.d("TestId", audID)
         val editor = mSettings!!.edit()
         if (startDate != "" && endDate != "") {
             editor.putString(START_DATE, startDate)
@@ -181,7 +179,6 @@ class FindAudActivity : AppCompatActivity() {
                         //Log.d("test", auditories.getShortName())// ;
                         audId = response.body()?.university?.buildings!![i]?.auditories!![j]?.shortName
                         //audIdList.add(audId);
-                        Log.d("test1", audId)
                     }
                 }
             }
